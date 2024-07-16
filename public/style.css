@@ -1,0 +1,125 @@
+::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #343a40; 
+  }
+   
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #adb5bd; 
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #6c757d; 
+  }
+
+#banner{
+    background: linear-gradient(rgba(0,0,0,0.5),rgba(0,0,0,0.2)), url('books.jpg'); 
+    background-size: cover;
+    background-position: center;
+    height: 40vh;
+    color: white;
+    padding-top: 8%;
+    text-shadow: 0 0.05rem 0.1rem rgba(0,0,0,0.5);
+    border-bottom: #343a40 15px solid;
+}
+
+#banner h1{
+    font-size: 3.5em;
+}
+
+#main .col-md-3{
+    background-size: cover;
+    background-position: center;
+    margin: 4%;
+    height: 55vh;
+    color: rgba(0, 0, 0, 0);
+    border-radius: 5px;
+    padding: 10% 1% 0 1%;
+    position: relative;
+    transition: 0.3s;
+}
+
+#main .col-md-3:hover{
+    background-image: none !important;
+    background-color: #17191c;
+    color: #fff;
+}
+
+#main .btn{
+    background-color: #343a40;
+    color: #fff;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    border-radius: 0 0 5px 5px;
+    padding: 3%;
+}
+
+#main .btn:hover{
+    background-color: #6c757d;
+}
+
+#main .btn:disabled{
+    background-color: #adb5bd;
+    opacity: 1;
+    border: none;
+}
+
+#loanForm{
+    padding-top: 35%;
+}
+
+#loanForm label{
+    margin-top: 40%;
+}
+
+#coverPreview{
+    background-color: #adb5bd;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 20vh;
+    border-radius: 5px;
+}
+
+#ucoverPreview{
+    background-color: #adb5bd;
+    background-size: contain;
+    background-repeat: no-repeat;
+    width: 100%;
+    height: 20vh;
+    border-radius: 5px;
+}
+
+table img{
+    height: 20vh;
+}
+
+footer .row{
+    background-color: #343a40;
+    text-align: center;
+    width: 100vw;
+    padding: 2% 0;
+}
+
+footer a{
+    color: #adb5bd;
+    font-size: 6em;
+    text-decoration: none;
+}
+
+footer a:hover{
+    color: #fff;
+}
+
+footer p{
+    margin-top: 1%;
+    color: #ffc107;
+}
+
