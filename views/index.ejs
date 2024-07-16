@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('partials/head.ejs') %>
+
+    <body>
+        <header class="container-fluid px-0">
+            <%- include('partials/header.ejs') %>
+                    <form class="d-flex" role="search">
+                        <div class="input-group">
+                            <button class="btn btn-outline-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Search By</button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="changeSearch('title')">Title</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="changeSearch('author')">Author</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="changeSearch('genre')">Genre</a></li>
+                            </ul>
+                            <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-warning" type="button" onclick="searchBooks()"><i class="bi bi-search"></i></button>
+                            <button class="btn btn-outline-warning" id="order" type="button" value="desc" onclick="changeOrder(this)"><i class="bi-caret-down"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </nav>
+        </header>
+
+        <main>
+            <div id = "banner">
+                <h1 class="text-center">Welcome to the Library!</h1>
+            </div>
+
+            <div id="main">
+                <div class="container text-center d-flex flex-wrap">
+
+                    <% if (books.length==0) { %>
+                        <div class="alert alert-danger mt-3 p-4">There are no books at the moment</div>
+                        <% } else { %>
+                            <% books.forEach(book=> { %>
+                            <div style="background-image: url('data:image/png;base64,<%= book.image %>')" class="col-md-3 text-center">
+                                <h2><%= book.title %></h2>
+                                <p>Author: <%= book.author %></p>
+                                <p>Genre: <%= book.genre %></p>
+                                <button type="button" class="btn" data-bs-toggle="modal" data-bs-target="#loanModal" onclick="loanBook(<%= JSON.stringify(book) %>)" <% if (book.isBorrowed == 1) { %>disabled<% } %>>Loan</button>
+                            </div>
+
+                            <% }); %>
+                    <% } %>
+
+                </div>
+            </div>
+        </main>
+
+        <!-- loanModal -->
+        <div class="modal fade" id="loanModal" tabindex="-1" aria-labelledby="loanModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="loanModalLabel">New Loan</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+        
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card" style="width: 18rem;">
+                                    <img id="Pcover" src="" class="card-img-top" alt="Book Cover">
+                                    <div class="card-body">
+                                        <h5 id="Ptitle" class="card-title"></h5>
+                                        <p id="Pauthor" class="card-text"></p>
+                                        <p id="Pgenre" class="card-text"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <form id="loan-form">
+                                    <label for="reader" class="form-label">Reader Loaning</label>
+                                    <select id="reader" class="form-select" aria-label="Reader select"></select>
+                                    <label for="Ldate" class="form-label">Loan Date</label>
+                                    <input type="date" class="form-control" id="Ldate" disabled>
+                                    <label for="Rdate" class="form-label">Return Date</label>
+                                    <input type="date" class="form-control" id="Rdate" disabled>
+                                    <input type="hidden" class="form-control" id="Pbid">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" onclick="saveLoan(event)" class="btn btn-primary">Loan Book</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('partials/footer.ejs') %>
+        <script src="/javascripts/index.js"></script>
+    </body>
+</html>

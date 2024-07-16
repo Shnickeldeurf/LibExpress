@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('partials/head.ejs') %>
+
+    <body>
+        <header class="container-fluid px-0">
+            <%- include('partials/header.ejs') %>
+                    <form class="d-flex" role="search">
+                        <div class="input-group">
+                            <button class="btn btn-outline-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Search By</button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="#" onclick="changeSearch('title')">Title</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="changeSearch('author')">Author</a></li>
+                                <li><a class="dropdown-item" href="#" onclick="changeSearch('genre')">Genre</a></li>
+                            </ul>
+                            <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+                            <button class="btn btn-outline-warning" type="button" onclick="searchBooks()"><i class="bi bi-search"></i></button>
+                            <button class="btn btn-outline-warning" id="order" type="button" value="desc" onclick="changeOrder(this)"><i class="bi-caret-down"></i></button>
+                        </div>
+                    </form>
+                </div>
+            </nav>
+        </header>
+        <main>
+            <form id="book-form">
+                <div class="row p-5">
+                    <div class="col-6">
+                        <label for="title" class="form-label">Title</label>
+                        <input type="text" class="form-control" id="title" placeholder="Enter Title..." required>
+                        <label for="author" class="form-label">Author</label>
+                        <input type="text" class="form-control" id="author" placeholder="Enter Author..." required>
+                        <label for="genre" class="form-label">Genre</label>
+                        <input type="text" class="form-control" id="genre" placeholder="Enter Genre..." required>
+                    </div>
+
+                    <div class="col-6">
+                        <label for="cover" class="form-label">Cover</label>
+                        <input type="file" class="form-control" id="cover" onchange="CoverPreview(this)" placeholder="Enter Cover..." required>
+                        <div id="coverPreview"></div>
+                    </div>
+                    <button type="submit" onclick="saveBook(event)" class="btn btn-lg btn-outline-warning mt-3">Add</button>
+                </div>
+            </form>
+
+            <% if (books.length==0) { %>
+                <div class="alert alert-danger mt-3 p-4">There are no books at the moment</div>
+                <% } else { %>
+                    <div>
+                        <h3>Books Information</h3>
+                        <table class="table table-striped text-center">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">ID</th>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Cover</th>
+                                    <th scope="col">Author</th>
+                                    <th scope="col">Genre</th>
+                                    <th scope="col">Availability</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <% books.forEach(book=> { %>
+                                    <tr>
+                                        <td>
+                                            <%= book.book_id %>
+                                        </td>
+                                        <td>
+                                            <%= book.title %>
+                                        </td>
+                                        <td><img src="data:image/png;base64,<%= book.image %>"></td>
+                                        <td>
+                                            <%= book.author %>
+                                        </td>
+                                        <td>
+                                            <%= book.genre %>
+                                        </td>
+                                            <% if (book.isBorrowed == 0) { %>
+                                                <td>
+                                                    <button class="btn btn-lg btn-outline-success" onclick="loanBook(<%= JSON.stringify(book) %>)">Loan</button>
+                                                </td>
+                                            <% } else { %>
+                                                <td>
+                                                    <button class="btn btn-lg btn-outline-primary" onclick="returnBook(<%= book.book_id %>)">Return</button>
+                                                </td>
+                                            <% }%>
+                                        <td>
+                                            <button class="btn btn-lg btn-outline-warning" onclick="editBook(<%= JSON.stringify(book) %>)"><i class="bi-pencil-square"></i></button>
+                                            <button class="btn btn-lg btn-outline-danger" onclick="deleteBook(<%= book.book_id %>)"><i class="bi-trash"></i></button>
+                                        </td>
+                                    </tr>
+                                    <% }); %>
+                            </tbody>
+                        </table>
+                    </div>
+                    <% } %>
+        </main>
+
+        <!-- Edit Modal -->
+        <div class="modal fade" id="edit-book" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Edit Book</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <form id="update-book-form">
+                            <div class="row">
+                                <div class="col-6">
+                                    <label for="utitle" class="form-label">Title</label>
+                                    <input type="text" class="form-control" id="utitle" placeholder="Enter Title..." required>
+                                    <label for="uauthor" class="form-label">Author</label>
+                                    <input type="text" class="form-control" id="uauthor" placeholder="Enter Author..." required>
+                                    <label for="ugenre" class="form-label">Genre</label>
+                                    <input type="text" class="form-control" id="ugenre" placeholder="Enter Genre..." required>
+                                </div>
+                                <div class="col-6">
+                                    <label for="ucover" class="form-label">Cover</label>
+                                    <input type="file" class="form-control" id="ucover" onchange="CoverPreview(this)" placeholder="Enter Cover..." required>
+                                    <div id="ucoverPreview"></div> 
+                                </div>
+                            </div>
+                            <input type="hidden" class="form-control" id="uid">
+                            <input type="hidden" class="form-control" id="isBorrowed">
+                        </form>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" onclick="saveChanges(event)">Save changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- loanModal -->
+        <div class="modal fade" id="loanModal" tabindex="-1" aria-labelledby="loanModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="loanModalLabel">New Loan</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+        
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-8">
+                                <div class="card" style="width: 18rem;">
+                                    <img id="Pcover" src="" class="card-img-top" alt="Book Cover">
+                                    <div class="card-body">
+                                        <h5 id="Ptitle" class="card-title"></h5>
+                                        <p id="Pauthor" class="card-text"></p>
+                                        <p id="Pgenre" class="card-text"></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <form id="loan-form">
+                                    <label for="reader" class="form-label">Reader Loaning</label>
+                                    <select id="reader" class="form-select" aria-label="Reader select"></select>
+                                    <label for="Ldate" class="form-label">Loan Date</label>
+                                    <input type="date" class="form-control" id="Ldate" disabled>
+                                    <label for="Rdate" class="form-label">Return Date</label>
+                                    <input type="date" class="form-control" id="Rdate" disabled>
+                                    <input type="hidden" class="form-control" id="Pbid">
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+        
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" onclick="saveLoan(event)" class="btn btn-primary">Loan Book</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <%- include('partials/footer.ejs') %>
+            <script src="/javascripts/books.js"></script>
+
+    </body>
+</html>

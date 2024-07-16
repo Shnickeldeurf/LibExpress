@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <%- include('partials/head.ejs') %>
+
+<body>
+    <header class="container-fluid px-0">
+        <%- include('partials/header.ejs') %>
+                <form class="d-flex" role="search">
+                    <div class="input-group">
+                        <button class="btn btn-outline-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Search By</button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="changeSearch('title')">Book</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeSearch('reader')">Reader</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeSearch('loanDate')">Loan Date</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeSearch('returnDate')">Return Date</a></li>
+                        </ul>
+                        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-warning" type="button" onclick="searchLoans()"><i class="bi bi-search"></i></button>
+                        <button class="btn btn-outline-warning" id="order" type="button" value="desc" onclick="changeOrder(this)"><i class="bi-caret-down"></i></button>
+                    </div>
+                </form>
+            </div>
+        </nav>
+    </header> 
+
+    <main>
+        <form id="loan-form" class="row p-5">
+            <div>
+                <label for="reader">Reader</label>
+                <select type="select" class="form-control" id="reader" required></select>
+                <label for="book">Book</label>
+                <select type="select" class="form-control" id="book" required></select>
+            </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="loanDate">Loan Date</label>
+                        <input type="date" class="form-control" id="Ldate" disabled>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="returnDate">Return Date</label>
+                        <input type="date" class="form-control" id="Rdate" disabled>
+                    </div>
+                </div>
+            <button type="submit" class="btn btn-lg btn-outline-warning mt-3" onclick="saveLoan(event)">Submit</button>
+        </form>
+
+        <% if (JSON.parse(loans).length == 0) { %>
+            <div class="alert alert-danger mt-3 p-4">There are no loans at the moment</div>
+        <% } else { %>
+        <div style="padding-top: 20px;">
+            <h3>Loans Information</h3>
+            <table class="table table-striped text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">Reader</th>
+                        <th scope="col">Book</th>
+                        <th scope="col">Date Loaned</th>
+                        <th scope="col">Date Returned</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% JSON.parse(loans).forEach(loan => { %>
+                        <tr>
+                            <td><%= loan.loan_id %></td>
+                            <td><%= loan.FName + " " + loan.LName %></td>
+                            <td><%= loan.title %></td>
+                            <td><%= loan.loanDate.split('T')[0] %></td>
+                            <td><%= loan.returnDate.split('T')[0] %></td>
+                            <td>
+                                <button class="btn btn-lg btn-outline-warning" onclick="editLoan(<%= JSON.stringify(loan) %>)"><i class="bi-pencil-square"></i></button>
+                                <button class="btn btn-lg btn-outline-danger" onclick="deleteLoan(<%= loan.loan_id %>, <%= loan.book_id %>)"><i class="bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+    </main>
+
+     <!-- Modal -->
+     <div class="modal fade" id="edit-loan" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Loan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <!-- Modal body -->
+                <div class="modal-body">
+                    <form id="update-loan-form">
+                        <div class="form-group">
+                            <label for="ureader">Reader</label>
+                            <select type="select" class="form-control" id="ureader" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="ubook">Book</label>
+                            <select type="select" class="form-control" id="ubook" required></select>
+                        </div>
+                        <div class="form-group">
+                            <label for="uLdate">Loan Date</label>
+                            <input type="date" class="form-control" id="uLdate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="uRdate">Return Date</label>
+                            <input type="date" class="form-control" id="uRdate" required>
+                        </div>
+                        <input type="hidden" id="uid">
+                        <input type="hidden" id="bid">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" onclick="saveChanges(event)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <%- include('partials/footer.ejs') %>
+    <script src="/javascripts/loans.js"></script>
+</body>
+</html>

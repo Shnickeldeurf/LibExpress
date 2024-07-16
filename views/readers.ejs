@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+
+<%- include('partials/head.ejs') %>
+
+<body>
+    <header class="container-fluid px-0">
+        <%- include('partials/header.ejs') %>
+                <form class="d-flex" role="search">
+                    <div class="input-group">
+                        <button class="btn btn-outline-warning dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">Search By</button>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="#" onclick="changeSearch('name')">Name</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeSearch('address')">Address</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeSearch('phone')">Phone Number</a></li>
+                        </ul>
+                        <input id="search" class="form-control" type="search" placeholder="Search" aria-label="Search">
+                        <button class="btn btn-outline-warning" type="button" onclick="searchReaders()"><i class="bi bi-search"></i></button>
+                        <button class="btn btn-outline-warning" id="order" type="button" value="desc" onclick="changeOrder(this)"><i class="bi-caret-down"></i></button>
+                    </div>
+                </form>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <form id="reader-form">
+            <div class="row p-5">
+                <div class="col-6">
+                    <label for="Fname" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="Fname" placeholder="Enter First Name..." required>
+                    <label for="Lname" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="Lname" placeholder="Enter Last Name..." required>
+                </div>
+    
+                <div class="col-6">
+                    <label for="address" class="form-label">Address</label>
+                    <input type="text" class="form-control" id="address" placeholder="Enter Address..." required>
+                    <label for="phone" class="form-label">Phone</label>
+                    <input type="text" class="form-control" id="phone" placeholder="Enter Phone..." pattern="[0-9]{10}" required>
+                </div>
+                <button type="submit" onclick="saveReader(event)" class="btn btn-lg btn-outline-warning mt-3">Add</button>
+            </div>
+        </form>
+
+        <% if (readers.length == 0) { %>
+            <div class="alert alert-danger mt-3 p-4">There are no readers at the moment</div>
+        <% } else { %>
+        <div>
+            <h3>Readers Information</h3>
+            <table class="table table-striped text-center">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">ID</th>
+                        <th scope="col">First Name</th>
+                        <th scope="col">Last Name</th>
+                        <th scope="col">Address</th>
+                        <th scope="col">Phone</th>
+                        <th scope="col">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <% readers.forEach(reader => { %>
+                        <tr>
+                            <td><%= reader.reader_id %></td>
+                            <td><%= reader.FName %></td>
+                            <td><%= reader.LName %></td>
+                            <td><%= reader.address %></td>
+                            <td><%= reader.phone %></td>
+                            <td>
+                                <button class="btn btn-lg btn-outline-warning" onclick="editReader(<%= JSON.stringify(reader) %>)"><i class="bi-pencil-square"></i></button>
+                                <button class="btn btn-lg btn-outline-danger" onclick="deleteReader(<%= reader.reader_id %>)"><i class="bi-trash"></i></button>
+                            </td>
+                        </tr>
+                    <% }); %>
+                </tbody>
+            </table>
+        </div>
+        <% } %>
+    </main>
+
+    <!-- Edit Modal -->
+    <div class="modal fade" id="edit-reader" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Edit Reader</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body">
+                    <form id="update-reader-form">
+                        <div class="row p-5">
+                            <div class="col-6">
+                                <label for="uFname" class="form-label">First Name</label>
+                                <input type="text" class="form-control" id="uFname" placeholder="Enter First Name..." required>
+                                <label for="uLname" class="form-label">Last Name</label>
+                                <input type="text" class="form-control" id="uLname" placeholder="Enter Last Name..." required>
+                            </div>
+        
+                            <div class="col-6">
+                                <label for="uaddress" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="uaddress" placeholder="Enter Address..." required>
+                                <label for="uphone" class="form-label">Phone</label>
+                                <input type="text" class="form-control" id="uphone" placeholder="Enter Phone..." pattern="[0-9]{10}" required>
+                                <input type="hidden" id="uid">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="submit" class="btn btn-primary" onclick="saveChanges(event)">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <%- include('partials/footer.ejs') %>
+    <script src="/javascripts/readers.js"></script>
+</body>
+
+</html>
