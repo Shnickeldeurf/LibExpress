@@ -31,21 +31,4 @@ router.get(['/', '/:searchby&:search&:order', '/:searchby&:order'], (req, res) =
     });
 });
 
-/* GET home page. */
-/*router.get('/', function(req, res, next) {
-  console.log(req.headers)
-  var sqlCmd = 'select * from books';
-  conn.query(sqlCmd, (error, result) => {
-      if (error)
-          console.log(error);
-      else {
-          result.forEach(book => {
-              const coverImage = Buffer.from(book.cover).toString('base64');
-              book.image = coverImage;
-          });
-          res.render('index', { books: result });
-      }
-  });
-});*/
-
 module.exports = router;

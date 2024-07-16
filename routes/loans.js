@@ -60,20 +60,6 @@ router.get(['/', '/:searchby&:search&:order', '/:searchby&:order'], (req, res) =
     });
 });
 
-
-// GET loans
-/*router.get('/', (req, res) => {
-    const sqlCmd = 'SELECT * FROM loans INNER JOIN readers ON loans.reader_id = readers.reader_id INNER JOIN books ON loans.book_id = books.book_id';
-    conn.query(sqlCmd, (error, result) => {
-        if (error)
-            console.log(error);
-        else {
-            checkReturnDate(result);
-            res.render('loans', { loans: JSON.stringify(result) });
-        }
-    });
-});*/
-
 // GET books
 router.get('/getbooks', (req, res) => {
     const sqlCmd = 'SELECT * FROM books WHERE isBorrowed = 0';
